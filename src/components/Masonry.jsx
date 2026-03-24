@@ -18,7 +18,7 @@ export function Masonry({ as, className, children }) {
     const element = elementRef.current;
 
     const columnCount = parseInt(
-      window.getComputedStyle(element).getPropertyValue("--column-count")
+      window.getComputedStyle(element).getPropertyValue("--column-count"),
     );
     const columnsHeight = new Array(columnCount).fill(0);
     let skip = false;
@@ -31,13 +31,13 @@ export function Masonry({ as, className, children }) {
       }
 
       const computedStyle = window.getComputedStyle(child);
-      const height = parseInt(computedStyle.height);
+      const height = parseFloat(computedStyle.height);
       if (height === 0) {
         skip = true;
         return;
       }
 
-      const totalHeight = height + parseInt(computedStyle.marginBottom);
+      const totalHeight = height + parseFloat(computedStyle.marginBottom);
 
       const minHeightIndex = columnsHeight.indexOf(Math.min(...columnsHeight));
       columnsHeight[minHeightIndex] += totalHeight;
@@ -54,7 +54,7 @@ export function Masonry({ as, className, children }) {
       });
 
       flushSync(() => {
-        setMaxColumnHeight(Math.max(...columnsHeight));
+        setMaxColumnHeight(Math.ceil(Math.max(...columnsHeight)));
         setLineBreakCount(columnCount - 1);
 
         element.childNodes.forEach((child, index) => {
@@ -99,7 +99,7 @@ export function Masonry({ as, className, children }) {
     });
 
     elementRef.current.childNodes.forEach((node) =>
-      resizeObserver.observe(node)
+      resizeObserver.observe(node),
     );
     mutationObserver.observe(elementRef.current, {
       childList: true,

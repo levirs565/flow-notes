@@ -1,5 +1,5 @@
 .masonry {
-  --gap: 8px;
+  --gap: 4px;
   --column-count: 4;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,9 @@
 }
 
 .masonry--item {
-  width: calc(100% / var(--column-count) - 2 * var(--gap));
+  width: calc(
+    (100% - (var(--column-count) - 1) * 2 * var(--gap)) / var(--column-count)
+  );
   margin-bottom: calc(2 * var(--gap));
   position: absolute;
   left: 0;
