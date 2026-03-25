@@ -19,7 +19,7 @@ import {
   AppButtonGroup,
   AppButtonGroupSpacer,
 } from "../components/AppButton";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useRegisterUser } from "../api";
 import { useI8n } from "../provider/context";
 import { FancyLink } from "../components/FancyLink";
@@ -33,9 +33,12 @@ function RegisterPage() {
     register,
     formState: { errors },
     handleSubmit,
-    watch,
+    control,
   } = useForm();
-  const passwordValue = watch("password");
+  const passwordValue = useWatch({
+    control,
+    name: "password",
+  });
   const { getText } = useI8n();
   const { error, isPerformed, handlePromise } = useActionState();
 
@@ -44,9 +47,9 @@ function RegisterPage() {
       onSubmit={handleSubmit((data) =>
         handlePromise(
           registerUser(data.name, data.email, data.password).then(() =>
-            navigate("/login")
-          )
-        )
+            navigate("/login"),
+          ),
+        ),
       )}
     >
       <CardFormHeader>

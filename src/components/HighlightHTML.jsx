@@ -36,7 +36,7 @@ function HighlightHTMLChunk({ text, startIndex }) {
     result.push(
       <React.Fragment key={keyIndex++}>
         {text.substring(prevIndexInText, indexInText)}
-      </React.Fragment>
+      </React.Fragment>,
     );
 
     result.push(
@@ -49,7 +49,7 @@ function HighlightHTMLChunk({ text, startIndex }) {
         }}
       >
         {text.substring(indexInText, endIndexInText)}
-      </span>
+      </span>,
     );
 
     prevIndexInText = endIndexInText;
@@ -58,7 +58,7 @@ function HighlightHTMLChunk({ text, startIndex }) {
     result.push(
       <React.Fragment key={keyIndex++}>
         {text.substring(prevIndexInText)}
-      </React.Fragment>
+      </React.Fragment>,
     );
   return result;
 }
@@ -76,6 +76,8 @@ export function HighlightHTML({ text, pattern }) {
       if (domNode.type !== "text") return reactNode;
 
       const currentTextIndex = nextTextIndex;
+      // This code block will always called before Component call ended
+      // eslint-disable-next-line react-hooks/immutability
       nextTextIndex += reactNode.length;
       currentText += normalizeInnerText(reactNode);
       return (
