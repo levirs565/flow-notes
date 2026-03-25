@@ -1,7 +1,10 @@
+import "dotenv/config";
 import express from "express";
-import { configDotenv } from "dotenv";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaClient } from "./generated/prisma/client.js";
 
-configDotenv();
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
+const prisma = new PrismaClient({ adapter });
 
 const app = express();
 
