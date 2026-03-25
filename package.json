@@ -12,27 +12,27 @@
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.0.15",
     "axios": "^1.6.2",
-    "domutils": "^3.1.0",
-    "html-dom-parser": "^5.0.6",
+    "domutils": "^4.0.2",
+    "html-dom-parser": "^6.0.0",
     "html-react-parser": "^5.0.10",
     "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-hook-form": "^7.49.2",
-    "react-router-dom": "^6.21.0",
+    "react-router-dom": "^7.13.2",
     "swr": "^2.2.4"
   },
   "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "postcss": "^8.4.32",
-    "postcss-import": "^15.1.0",
-    "postcss-mixins": "^9.0.4",
-    "vite": "^4.4.5"
+    "postcss-import": "^16.1.1",
+    "postcss-mixins": "^12.1.2",
+    "vite": "^8.0.2"
   }
 }
