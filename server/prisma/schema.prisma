@@ -27,3 +27,10 @@ model Note {
   createdAt DateTime
   archived  Boolean
 }
+
+model Session {
+  id          String   @id
+  sid         String   @unique
+  data        String   @db.MediumText  // MediumText may be needed for MySql
+  expiresAt   DateTime
+}
