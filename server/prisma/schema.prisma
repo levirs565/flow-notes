@@ -24,8 +24,8 @@ model Note {
   userId    Int
   title     String
   body      String
-  createdAt DateTime
-  archived  Boolean
+  createdAt DateTime @default(now())
+  archived  Boolean  @default(false)
 }
 
 model Session {

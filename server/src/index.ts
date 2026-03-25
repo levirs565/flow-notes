@@ -6,6 +6,8 @@ import { PrismaClient } from "./generated/prisma/client.js";
 import { AuthService } from "./auth/service.js";
 import { AuthController } from "./auth/controller.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import { NoteService } from "./note/service.js";
+import { NoteController } from "./note/controller.js";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -29,10 +31,13 @@ app.use(
 app.use(express.json());
 
 const authService = new AuthService(prisma);
+const noteService = new NoteService(prisma);
 
 const authController = new AuthController(authService);
-
 app.use("/auth", authController.createRouter());
+
+const noteController = new NoteController(noteService);
+app.use("/notes", noteController.createRouter());
 
 app.get("/status", (req, res) => {
   return res.status(200).json({
