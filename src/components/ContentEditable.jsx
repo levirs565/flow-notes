@@ -1,25 +1,34 @@
 import { forwardRef, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import "./ContentEditable.css";
+import { useImperativeHandle } from "react";
 
 function getElementSelectionLength(el) {
   return document.activeElement == el
-    ? window.getSelection()?.toString().length ?? 0
+    ? (window.getSelection()?.toString().length ?? 0)
     : 0;
 }
 
 export const ContentEditable = forwardRef(function ContentEditable(
   { as, className, value, onValueChanged, ...props },
-  ref
+  ref,
 ) {
   const As = as;
+
+  const innerRef = useRef();
+
+  useImperativeHandle(ref, () => innerRef.current);
+
+  useEffect(() => {
+    if (!innerRef.current) return;
+    innerRef.current.innerHTML = value;
+  }, [value]);
 
   return (
     <As
       className={["content-editable", className].join(" ")}
-      dangerouslySetInnerHTML={{ __html: value }}
       onBlur={(e) => onValueChanged(e.target.innerHTML)}
-      ref={ref}
+      ref={innerRef}
       {...props}
     />
   );
