@@ -1,4 +1,7 @@
 import express from "express";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 const app = express();
 
@@ -8,7 +11,7 @@ app.get("/status", (req, res) => {
   });
 });
 
-const port = 3000;
+const port = parseInt(process.env.PORT ?? "3000");
 app.listen(port, () => {
   console.log(`Server run at port ${port}`);
 });
