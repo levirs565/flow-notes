@@ -1,16 +1,12 @@
 import useSWR, { useSWRConfig } from "swr";
 
-const rootUrl = "https://notes-api.dicoding.dev/v1";
-const accessTokenKey = "accessToken";
+const rootUrl = "/api";
 
 async function customFetch(path, { headers, ...moreOptions }) {
-  const accessToken = localStorage.getItem(accessTokenKey);
   const response = await fetch(`${rootUrl}/${path}`, {
     ...moreOptions,
-    headers: {
-      Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
-      ...headers,
-    },
+    headers: headers,
+    credentials: "include",
   });
   const json = await response.json();
   if (!response.ok) {
@@ -18,7 +14,7 @@ async function customFetch(path, { headers, ...moreOptions }) {
     error.statusCode = response.status;
     throw error;
   }
-  return json.data;
+  return json;
 }
 
 async function swrFetcher(path) {
@@ -37,7 +33,7 @@ function postData(path, data) {
 
 export function useRegisterUser() {
   return async (name, email, password) =>
-    await postData("register", {
+    await postData("auth/register", {
       email,
       name,
       password,
@@ -47,12 +43,11 @@ export function useRegisterUser() {
 export function useLoginUser() {
   const { mutate } = useSWRConfig();
   return async (email, password) => {
-    const result = await postData("login", {
+    await postData("auth/login", {
       email,
       password,
     });
-    localStorage.setItem(accessTokenKey, result.accessToken);
-    await mutate("users/me");
+    await mutate("auth/state");
   };
 }
 
@@ -77,7 +72,7 @@ export function useLoggedUser() {
     data: user,
     mutate,
     ...rest
-  } = useSWR("users/me", swrFetcher, {
+  } = useSWR("auth/state", swrFetcher, {
     shouldRetryOnError: false,
     use: [loggedUserMiddleware],
   });
@@ -86,22 +81,29 @@ export function useLoggedUser() {
     mutate,
     ...rest,
     logout: async () => {
-      localStorage.removeItem(accessTokenKey);
+      await postData("auth/logout");
       await mutate();
     },
   };
 }
 
-export function useActiveNotes() {
-  const { data, ...rest } = useSWR("notes", swrFetcher);
+export function useActiveNotes(query) {
+  const params = new URLSearchParams({
+    q: query,
+  });
+  const { data, ...rest } = useSWR("notes?" + params, swrFetcher);
   return {
     notes: data,
     ...rest,
   };
 }
 
-export function useArchivedNotes() {
-  const { data, ...rest } = useSWR("notes/archived", swrFetcher);
+export function useArchivedNotes(query) {
+  const params = new URLSearchParams({
+    archived: true,
+    q: query,
+  });
+  const { data, ...rest } = useSWR("notes?" + params, swrFetcher);
   return {
     notes: data,
     ...rest,
@@ -112,9 +114,23 @@ export function useAddNote() {
   const { mutate } = useSWRConfig();
   return async (note) => {
     const result = await postData("notes", note);
-    mutate("notes");
+    mutate(isNotesKey);
     return result;
   };
+}
+
+function isNotesKey(key) {
+  return key.startsWith("notes?");
+}
+
+function patchArchive(id, archived) {
+  return customFetch(`notes/${id}/archive`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ archived }),
+  });
 }
 
 export function useNote(id) {
@@ -123,20 +139,18 @@ export function useNote(id) {
   const { mutate: mutateGlobal } = useSWRConfig();
 
   const noteChanged = async () => {
-    await mutateGlobal((key) =>
-      ["notes", "notes/archived", path].includes(key)
-    );
+    await mutateGlobal((key) => path == key || isNotesKey(key));
   };
 
   return {
     note: data,
     ...rest,
     async archive() {
-      await postData(`${path}/archive`);
+      await patchArchive(id, true);
       await noteChanged();
     },
     async unarchive() {
-      await postData(`${path}/unarchive`);
+      await patchArchive(id, false);
       await noteChanged();
     },
     async remove() {

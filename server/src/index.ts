@@ -33,17 +33,21 @@ app.use(express.json());
 const authService = new AuthService(prisma);
 const noteService = new NoteService(prisma);
 
+const apiRoute = express.Router();
+
 const authController = new AuthController(authService);
-app.use("/auth", authController.createRouter());
+apiRoute.use("/auth", authController.createRouter());
 
 const noteController = new NoteController(noteService);
-app.use("/notes", noteController.createRouter());
+apiRoute.use("/notes", noteController.createRouter());
 
-app.get("/status", (req, res) => {
+apiRoute.get("/status", (req, res) => {
   return res.status(200).json({
     health: true,
   });
 });
+
+app.use("/api", apiRoute);
 
 const port = parseInt(process.env.PORT ?? "3000");
 app.listen(port, () => {

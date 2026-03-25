@@ -2,30 +2,25 @@ import { NoteList } from "../components/Note";
 import { FloatingActionButton } from "../components/FloatingActionButton";
 import { useLocation, useOutletContext } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useSearchQuery } from "./utils";
-import { filterNotes } from "../utils";
 import { useActiveNotes } from "../api";
 import { useI8n } from "../provider/context";
 import { LoggedInGuard } from "../guard/LoginGuard";
 
 function ActiveNotePageContent({ location, searchQuery }) {
-  const { notes, isLoading } = useActiveNotes();
-  const filteredNotes = useMemo(
-    () => (notes ? filterNotes(notes, searchQuery) : []),
-    [searchQuery, notes]
-  );
+  const { notes, isLoading } = useActiveNotes(searchQuery);
   const { getText } = useI8n();
 
   return (
     <main className="app-main">
       <NoteList
-        list={filteredNotes}
+        list={notes}
         highlightPattern={searchQuery}
         emptyMessage={getText(
           searchQuery.length > 0
             ? "noteFindNotFoundMessage"
-            : "noteBlankMessage"
+            : "noteBlankMessage",
         )}
         isLoading={isLoading}
       />
