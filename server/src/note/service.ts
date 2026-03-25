@@ -1,3 +1,4 @@
+import { NotFoundError } from "../core/error.js";
 import { Prisma, type PrismaClient } from "../generated/prisma/client.js";
 import type { ListQuery, UpdateRequest } from "./dto.js";
 
@@ -70,7 +71,7 @@ export class NoteService {
       },
     });
     if (!note) {
-      throw new Error("Note not found");
+      throw new NotFoundError("Note not found");
     }
     return note;
   }
@@ -95,7 +96,7 @@ export class NoteService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2025") {
-          throw new Error("Note not found");
+          throw new NotFoundError("Note not found");
         }
       }
       throw e;
@@ -121,7 +122,7 @@ export class NoteService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2025") {
-          throw new Error("Note not found");
+          throw new NotFoundError("Note not found");
         }
       }
       throw e;
@@ -144,7 +145,7 @@ export class NoteService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2025") {
-          throw new Error("Note not found");
+          throw new NotFoundError("Note not found");
         }
       }
       throw e;

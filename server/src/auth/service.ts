@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from "../generated/prisma/client.js";
 import argon2 from "argon2";
 import type { LoginRequest, RegisterRequest } from "./dto.js";
+import { ConflictError, UnauthorizedError } from "../core/error.js";
 
 export class AuthService {
   private prisma: PrismaClient;
@@ -21,7 +22,7 @@ export class AuthService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2002") {
-          throw new Error("Email already registered");
+          throw new ConflictError("Email already registered");
         }
       }
       throw e;
@@ -38,7 +39,7 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new UnauthorizedError("User not found");
 
     return await argon2.verify(user?.passwordHash, request.password);
   }

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `note` MODIFY `body` MEDIUMTEXT NOT NULL;

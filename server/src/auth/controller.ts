@@ -2,6 +2,7 @@ import express from "express";
 import type { AuthService } from "./service.js";
 import { loginRequestSchema, registerRequestSchema } from "./dto.js";
 import { createGuardMiddleware } from "../core/guard.js";
+import { UnauthorizedError } from "../core/error.js";
 
 export class AuthController {
   private service: AuthService;
@@ -21,7 +22,7 @@ export class AuthController {
     const success = await this.service.login(payload);
 
     if (!success) {
-      throw new Error("Password not match");
+      throw new UnauthorizedError("Password not match");
     }
 
     req.session.email = payload.email;

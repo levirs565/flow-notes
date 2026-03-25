@@ -7,7 +7,7 @@
   margin: auto;
   padding: 0;
   max-block-size: min(80vh, 100%);
-  min-inline-size: 60ch;
+  min-inline-size: min(90vw, 60ch);
   max-inline-size: min(90vw, 60ch);
   overflow: hidden;
   display: flex;

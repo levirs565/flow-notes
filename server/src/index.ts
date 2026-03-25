@@ -8,6 +8,7 @@ import { AuthController } from "./auth/controller.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { NoteService } from "./note/service.js";
 import { NoteController } from "./note/controller.js";
+import { appErrorHandler } from "./core/error.js";
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -48,8 +49,9 @@ apiRoute.get("/status", (req, res) => {
 });
 
 app.use("/api", apiRoute);
+app.use(appErrorHandler);
 
-const port = parseInt(process.env.PORT ?? "3000");
+const port = parseInt(process.env.PORT ?? "8080");
 app.listen(port, () => {
   console.log(`Server run at port ${port}`);
 });

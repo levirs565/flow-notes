@@ -105,11 +105,11 @@ export function TopBar({
 }) {
   const { getText } = useI8n();
   const searchParam = createSearchParams(
-    buildSearchParam(searchQuery)
+    buildSearchParam(searchQuery),
   ).toString();
   return (
     <header className="top-bar">
-      <h1 className="top-bar--title">Notes</h1>
+      <h1 className="top-bar--title">FlowNotes</h1>
       {userName && (
         <TopBarTabs>
           <TopBarTabsItem
