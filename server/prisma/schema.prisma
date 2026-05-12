@@ -10,6 +10,7 @@ datasource db {
 }
 
 model User {
+  @@map("user")
   id           Int    @id @default(autoincrement())
   email        String @unique
   name         String
@@ -19,6 +20,7 @@ model User {
 }
 
 model Note {
+  @@map("note")
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
@@ -29,6 +31,7 @@ model Note {
 }
 
 model Session {
+  @@map("session")
   id          String   @id
   sid         String   @unique
   data        String   @db.MediumText  // MediumText may be needed for MySql
