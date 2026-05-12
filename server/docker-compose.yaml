@@ -1,0 +1,52 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: myapp
+      MARIADB_USER: myuser
+      MARIADB_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  wait-db:
+    image: wait4x/wait4x
+    restart: "no"
+
+    command: tcp mariadb:3306 --timeout 60s --interval 2s
+
+    depends_on:
+      - mariadb
+
+  migrate:
+    build:
+      context: .
+      target: migration
+    environment:
+      DATABASE_URL: mysql://myuser:mypassword@mariadb:3306/myapp
+    depends_on:
+      wait-db:
+        condition: service_completed_successfully
+    restart: no
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql://myuser:mypassword@mariadb:3306/myapp
+      SESSION_SECRET: asecretscretsecret
+      PORT: 8080
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+
+volumes:
+  mariadb_data:
