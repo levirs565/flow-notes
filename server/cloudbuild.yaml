@@ -12,7 +12,7 @@ steps:
       - "runner"
       - "-t"
       - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/${_IMAGE_NAME}:$SHORT_SHA"
-      - "."
+      - "./server"
 
   - name: "gcr.io/cloud-builders/docker"
     id: "Push Image"
