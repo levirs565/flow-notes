@@ -1,3 +1,6 @@
+substitutions:
+  _VITE_API_URL: "http://localhost:8080"
+
 steps:
   - name: "node:22"
     entrypoint: npm
@@ -8,6 +11,9 @@ steps:
     entrypoint: npm
     args: ["run", "build"]
     dir: "client"
+    env:
+      - "VITE_API_URL=${_VITE_API_URL}"
+      - "NODE_ENV=production"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
