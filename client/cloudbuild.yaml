@@ -1,0 +1,16 @@
+steps:
+  - name: "node:22"
+    entrypoint: npm
+    args: ["install"]
+    dir: "client"
+
+  - name: "node:22"
+    entrypoint: npm
+    args: ["run", "build"]
+    dir: "client"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args: ["app", "deploy", "client/app.yaml"]
+
+timeout: "1200s"

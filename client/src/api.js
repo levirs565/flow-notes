@@ -1,6 +1,6 @@
 import useSWR, { useSWRConfig } from "swr";
 
-const rootUrl = "/api";
+const rootUrl = import.meta.env.VITE_API_URL ?? "/api";
 
 async function customFetch(path, { headers, ...moreOptions }) {
   const response = await fetch(`${rootUrl}/${path}`, {
