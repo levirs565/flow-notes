@@ -34,8 +34,5 @@ steps:
       - "managed"
       - "--allow-unauthenticated"
 
-images:
-  - "${_IMAGE_URL}:$SHORT_SHA"
-
 options:
   logging: CLOUD_LOGGING_ONLY
