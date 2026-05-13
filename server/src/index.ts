@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import expressSession from "express-session";
+import cors from "cors";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "./generated/prisma/client.js";
 import { AuthService } from "./auth/service.js";
@@ -14,6 +15,10 @@ const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
+
+if (process.env.CORS_ORIGIN) {
+  app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+}
 
 app.use(
   expressSession({
