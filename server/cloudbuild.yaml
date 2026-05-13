@@ -1,0 +1,41 @@
+substitutions:
+  _IMAGE_URL: "asia-southeast1-docker.pkg.dev/$PROJECT_ID/levirs565/flow-notes"
+  _SERVICE_NAME: "flow-notes-server"
+
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Build Image"
+    args:
+      - "build"
+      - "--target"
+      - "runner"
+      - "-t"
+      - "${_IMAGE_URL}:$SHORT_SHA"
+      - "."
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Push Image"
+    args:
+      - "push"
+      - "${_IMAGE_URL}:$SHORT_SHA"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "Deploy to Cloud Run"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "$_SERVICE_NAME"
+      - "--image"
+      - "${_IMAGE_URL}:$SHORT_SHA"
+      - "--region"
+      - "asia-southeast1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+images:
+  - "${_IMAGE_URL}:$SHORT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
