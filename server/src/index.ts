@@ -16,6 +16,8 @@ const prisma = new PrismaClient({ adapter });
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 if (process.env.CORS_ORIGIN) {
   app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 }
