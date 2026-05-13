@@ -1,5 +1,6 @@
 substitutions:
-  _IMAGE_URL: "asia-southeast1-docker.pkg.dev/$PROJECT_ID/levirs565/flow-notes"
+  _REPO_NAME: "levirs565"
+  _IMAGE_NAME: "flow-notes-server"
   _SERVICE_NAME: "flow-notes-server"
 
 steps:
@@ -10,14 +11,14 @@ steps:
       - "--target"
       - "runner"
       - "-t"
-      - "${_IMAGE_URL}:$SHORT_SHA"
+      - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/${_IMAGE_NAME}:$SHORT_SHA"
       - "."
 
   - name: "gcr.io/cloud-builders/docker"
     id: "Push Image"
     args:
       - "push"
-      - "${_IMAGE_URL}:$SHORT_SHA"
+      - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/${_IMAGE_NAME}:$SHORT_SHA"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     id: "Deploy to Cloud Run"
@@ -25,14 +26,17 @@ steps:
     args:
       - "run"
       - "deploy"
-      - "$_SERVICE_NAME"
+      - "${_SERVICE_NAME}"
       - "--image"
-      - "${_IMAGE_URL}:$SHORT_SHA"
+      - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/${_IMAGE_NAME}:$SHORT_SHA"
       - "--region"
       - "asia-southeast1"
       - "--platform"
       - "managed"
       - "--allow-unauthenticated"
+
+images:
+  - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/${_IMAGE_NAME}:$SHORT_SHA"
 
 options:
   logging: CLOUD_LOGGING_ONLY
